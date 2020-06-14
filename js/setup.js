@@ -133,7 +133,7 @@ var onPopupCloseEnterPress = function (evt) {
 };
 
 var openPopup = function () {
-  userDialog.classList.remove("hidden");
+  userDialog.classList.remove('hidden');
 
   setupOpen.removeEventListener('keydown', onPopupOpenEnterPress);
   setupClose.addEventListener('keydown', onPopupCloseEnterPress);
