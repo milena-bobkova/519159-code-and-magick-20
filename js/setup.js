@@ -38,10 +38,19 @@ var WIZARD = {
   ]
 };
 
+var FIREBALL_COLOR = [
+  '#ee4830',
+  '#30a8ee',
+  '#5ce6c0',
+  '#e848d5',
+  '#e6e848'
+];
+
 var WIZARDS_COUNT = 4;
 
+var FORM_ACTION = 'https://javascript.pages.academy/code-and-magick';
+
 var userDialog = document.querySelector('.setup');
-userDialog.classList.remove('hidden');
 
 var similarListElement = userDialog.querySelector('.setup-similar-list');
 var similarWizardTemplate = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
@@ -94,3 +103,88 @@ var fragment = renderWizards(wizards);
 similarListElement.appendChild(fragment);
 
 userDialog.querySelector('.setup-similar').classList.remove('hidden');
+
+var setupOpen = document.querySelector('.setup-open');
+var setupClose = userDialog.querySelector('.setup-close');
+var setupOpenIcon = setupOpen.querySelector('.setup-open-icon');
+var userNameInput = userDialog.querySelector('.setup-user-name');
+var setupWizardForm = userDialog.querySelector('.setup-wizard-form');
+
+setupOpenIcon.tabIndex = 0;
+setupClose.tabIndex = 0;
+
+var onPopupEscPress = function (evt) {
+  if (evt.key === 'Escape' && document.activeElement !== userNameInput) {
+    evt.preventDefault();
+    closePopup();
+  }
+};
+
+var onPopupOpenEnterPress = function (evt) {
+  if (evt.key === 'Enter') {
+    openPopup();
+  }
+};
+
+var onPopupCloseEnterPress = function (evt) {
+  if (evt.key === 'Enter') {
+    closePopup();
+  }
+};
+
+var openPopup = function () {
+  userDialog.classList.remove("hidden");
+
+  setupOpen.removeEventListener('keydown', onPopupOpenEnterPress);
+  setupClose.addEventListener('keydown', onPopupCloseEnterPress);
+  document.addEventListener('keydown', onPopupEscPress);
+};
+
+var closePopup = function () {
+  userDialog.classList.add('hidden');
+
+  setupOpen.addEventListener('keydown', onPopupOpenEnterPress);
+  setupClose.removeEventListener('keydown', onPopupCloseEnterPress);
+  document.removeEventListener('keydown', onPopupEscPress);
+};
+
+setupOpen.addEventListener('click', openPopup);
+setupClose.addEventListener('click', closePopup);
+
+setupWizardForm.action = FORM_ACTION;
+
+userNameInput.addEventListener('input', function () {
+  if (userNameInput.validity.tooShort) {
+    userNameInput.setCustomValidity('Имя должно состоять минимум из 2-х символов');
+  } else if (userNameInput.validity.tooLong) {
+    userNameInput.setCustomValidity('Имя не должно превышать 25-ти символов');
+  } else if (userNameInput.validity.valueMissing) {
+    userNameInput.setCustomValidity('Обязательное поле');
+  } else {
+    userNameInput.setCustomValidity('');
+  }
+});
+
+var wizardCoatColor = setupWizardForm.querySelector('.wizard-coat');
+var wizardEyesColor = setupWizardForm.querySelector('.wizard-eyes');
+var fireballColor = setupWizardForm.querySelector('.setup-fireball-wrap');
+
+var wizardCoatColorSetup = setupWizardForm.querySelector('input[name="coat-color"]');
+var wizardEyesColorSetup = setupWizardForm.querySelector('input[name="eyes-color"]');
+var fireballColorSetup = setupWizardForm.querySelector('input[name="fireball-color"]');
+
+var onFireballClick = function () {
+  fireballColor.style.backgroundColor = fireballColorSetup.value = getRandomElement(FIREBALL_COLOR);
+};
+
+var onWizardCoatClick = function () {
+  wizardCoatColor.style.fill = wizardCoatColorSetup.value = getRandomElement(WIZARD.COATS);
+};
+
+var onWizarEyesClick = function () {
+  wizardEyesColor.style.fill = wizardEyesColorSetup.value = getRandomElement(WIZARD.EYES);
+};
+
+fireballColor.addEventListener('click', onFireballClick);
+wizardCoatColor.addEventListener('click', onWizardCoatClick);
+wizardEyesColor.addEventListener('click', onWizarEyesClick);
