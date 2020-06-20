@@ -1,6 +1,9 @@
 'use strict';
+var WIZARDS_COUNT = 4;
 
-var WIZARD = {
+var FORM_ACTION = 'https://javascript.pages.academy/code-and-magick';
+
+var Wizard = {
   NAMES: [
     'Иван',
     'Хуан Себастьян',
@@ -46,17 +49,13 @@ var FIREBALL_COLOR = [
   '#e6e848'
 ];
 
-var WIZARDS_COUNT = 4;
-
-var FORM_ACTION = 'https://javascript.pages.academy/code-and-magick';
-
 var userDialog = document.querySelector('.setup');
 
 var similarListElement = userDialog.querySelector('.setup-similar-list');
 var similarWizardTemplate = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
 
 /**
- * выбирает случайный элемент из массива
+ * Выбирает случайный элемент из массива
  * @param {array} array - случайный массив
  * @return {*} - случайный элемент массива
  */
@@ -65,20 +64,31 @@ var getRandomElement = function (array) {
   var random = Math.floor(Math.random() * array.length);
   return array[random];
 };
+/**
+ * Создает массив данных похожих персонажей
+ * @param {number} count - количество персонажей
+ * @return {array} - массив данных похожих персонажей
+ */
 
-var generateWizardsData = function () {
-  var wizards = [];
+var generateWizardsData = function (count) {
+  var characters = [];
 
-  for (var i = 0; i < WIZARDS_COUNT; i++) {
-    wizards.push({
-      name: getRandomElement(WIZARD.NAMES) + ' ' + getRandomElement(WIZARD.SURNAMES),
-      coatColor: getRandomElement(WIZARD.COATS),
-      eyesColor: getRandomElement(WIZARD.EYES)
+  for (var i = 0; i < count; i++) {
+    characters.push({
+      name: getRandomElement(Wizard.NAMES) + ' ' + getRandomElement(Wizard.SURNAMES),
+      coatColor: getRandomElement(Wizard.COATS),
+      eyesColor: getRandomElement(Wizard.EYES)
     });
   }
-  return wizards;
+  return characters;
 };
+var wizards = generateWizardsData(WIZARDS_COUNT);
 
+/**
+ * Заполняет шаблон данными из массива
+ * @param {object} wizard - случайно сгенерированный персонаж
+ * @return {*} - сгенерированный DOM-элемент
+ */
 var renderWizard = function (wizard) {
   var wizardElement = similarWizardTemplate.cloneNode(true);
 
@@ -89,18 +99,20 @@ var renderWizard = function (wizard) {
   return wizardElement;
 };
 
-var wizards = generateWizardsData();
-var renderWizards = function () {
+/** Вставляет сгенерированные DOM-элементы в документ
+ * @param {array} characters - массив данных похожих персонажей
+ * @return {object} - сгенерированные DOM-элементы
+ */
+var renderWizards = function (characters) {
   var fragment = document.createDocumentFragment();
-  wizards.forEach(function (wizard) {
+  characters.forEach(function (wizard) {
     fragment.appendChild(renderWizard(wizard));
   });
   return fragment;
 };
+var wizardsFragment = renderWizards(wizards);
 
-var fragment = renderWizards(wizards);
-
-similarListElement.appendChild(fragment);
+similarListElement.appendChild(wizardsFragment);
 
 userDialog.querySelector('.setup-similar').classList.remove('hidden');
 
@@ -178,11 +190,11 @@ var onFireballClick = function () {
 };
 
 var onWizardCoatClick = function () {
-  wizardCoatColor.style.fill = wizardCoatColorSetup.value = getRandomElement(WIZARD.COATS);
+  wizardCoatColor.style.fill = wizardCoatColorSetup.value = getRandomElement(Wizard.COATS);
 };
 
 var onWizarEyesClick = function () {
-  wizardEyesColor.style.fill = wizardEyesColorSetup.value = getRandomElement(WIZARD.EYES);
+  wizardEyesColor.style.fill = wizardEyesColorSetup.value = getRandomElement(Wizard.EYES);
 };
 
 fireballColor.addEventListener('click', onFireballClick);
