@@ -50,6 +50,11 @@
     ]
   };
 
+  var DefaultColor = {
+    COAT_COLOR: 'rgb(101, 137, 164)',
+    EYES_COLOR: 'black'
+  };
+
   /**
    * Методы для работы с событиями с клавиатуры
    * @param {*} evt - объект события
@@ -69,10 +74,10 @@
   };
 
   /**
- * Выбирает случайный элемент из массива
- * @param {array} array - случайный массив
- * @return {*} - случайный элемент массива
- */
+  * Выбирает случайный элемент из массива
+  * @param {array} array - случайный массив
+  * @return {*} - случайный элемент массива
+  */
   var getRandomElement = function (array) {
     var random = Math.floor(Math.random() * array.length);
     return array[random];
@@ -94,6 +99,7 @@
 
     return maxElement;
   };
+
   /**
    * Добавление окна ошибки
    * @param {*} errorMessage
@@ -110,12 +116,30 @@
     document.body.insertAdjacentElement('afterbegin', node);
   };
 
+  var DEBOUNCE_INTERVAL = 300; // ms
+
+  var debounce = function (cb) {
+    var lastTimeout = null;
+
+    return function () {
+      var parameters = arguments;
+      if (lastTimeout) {
+        window.clearTimeout(lastTimeout);
+      }
+      lastTimeout = window.setTimeout(function () {
+        cb.apply(null, parameters);
+      }, DEBOUNCE_INTERVAL);
+    };
+  };
+
   window.util = {
     isEscEvent: isEscEvent,
     isEnterEvent: isEnterEvent,
     getRandomElement: getRandomElement,
     getMaxElement: getMaxElement,
     onErrorEvent: onErrorEvent,
-    WizardData: WizardData
+    WizardData: WizardData,
+    DefaultColor: DefaultColor,
+    debounce: debounce
   };
 })();
